@@ -42,9 +42,12 @@ def get_data_from_file():
     """
     instr_df = pd.read_excel('./../data/Instrument_price.xlsx', engine='xlrd')
     instr_df_with_our_code = instr_df[instr_df['наш код'].notnull()]
+
+    # TODO make code for take "makita" dataframe from file
     return instr_df_with_our_code
 
 
+# TODO func must take "name" arg and make file with that arg in path
 # ------------------------------------------------------------------------------------------------
 # push data to xlsx-file, decorate it
 def push_data_to_xlsx(data):
@@ -79,12 +82,13 @@ def push_data_to_xlsx(data):
 
 
 # ------------------------------------------------------------------------------------------------
-# parsing all items in data, take price-value, add it to the dataframe
-def get_df_with_prices(data):
+# parsing all items in data, take price-value from instrument site, add it to the dataframe
+def get_df_with_prices_instr(data):
     """
     data: pandas dataframe
     return: pandas dataframe with price for ich item
     """
+    our_code_price_df = []  # meanwhile df is empty
     data.reset_index(inplace=True)
     our_code_price_dict = {}
     session = requests.Session()
@@ -103,3 +107,9 @@ def get_df_with_prices(data):
                 f.write(f'error on parsing {data["cсылка"][i]}, - {e}')
 
     return our_code_price_df
+
+
+# ------------------------------------------------------------------------------------------------
+# parsing makita-ite for prices and push it to the dataframe
+def get_df_with_prices_makita(data):
+    pass
