@@ -43,17 +43,19 @@ def get_data_from_file():
     instr_df = pd.read_excel('./../data/Instrument_price.xlsx', engine='xlrd')
     instr_df_with_our_code = instr_df[instr_df['наш код'].notnull()]
 
-    # TODO make code for take "makita" dataframe from file
-    return instr_df_with_our_code
+    makita_df = pd.read_excel('./../data/makita_prices.xlsx', engine='xlrd')
+    makita_df_with_our_code = makita_df[makita_df['Наш код'].notnull()]
+
+    return instr_df_with_our_code, makita_df_with_our_code
 
 
 # TODO func must take "name" arg and make file with that arg in path
 # ------------------------------------------------------------------------------------------------
 # push data to xlsx-file, decorate it
-def push_data_to_xlsx(data):
-    today = datetime.today()
-    name = './../xlsx/instrument_price_our_code_' + today.strftime("%d.%m.%Y") + '.xlsx'
-    writer = pd.ExcelWriter(name, engine='xlsxwriter')
+def push_data_to_xlsx(name, data):
+    # today = datetime.today()
+    file_path = './../xlsx/' + str(name) + '.xlsx'
+    writer = pd.ExcelWriter(file_path, engine='xlsxwriter')
     data.to_excel(writer, sheet_name='Sheet1', index=True)
     workbook = writer.book
     cell_format = workbook.add_format({
@@ -83,33 +85,59 @@ def push_data_to_xlsx(data):
 
 # ------------------------------------------------------------------------------------------------
 # parsing all items in data, take price-value from instrument site, add it to the dataframe
-def get_df_with_prices_instr(data):
+def get_df_with_prices_instr(data_instr):
     """
     data: pandas dataframe
     return: pandas dataframe with price for ich item
     """
     our_code_price_df = []  # meanwhile df is empty
-    data.reset_index(inplace=True)
+    data_instr.reset_index(inplace=True)
     our_code_price_dict = {}
     session = requests.Session()
-    for i in tqdm(range(len(data['ссылка']))):
+    for i in tqdm(range(len(data_instr['ссылка']))):
         try:
-            response = session.get(data['ссылка'][i])
+            response = session.get(data_instr['ссылка'][i])
             if response.status_code == 200:
                 soup = bs(response.content, 'html.parser')
                 price_value = price_cutter(soup.select('body > div.wrap > div.container.container_mobile.page__container.sticky-inside.content > div.product-view > div:nth-child(1) > div.col.l3.s12.sticky > div.product-view__wrap.product-view__buy-wrap.side-bar.hide-on-small-only > div:nth-child(1) > div > div.product-view__prices > div.product-view__price-value')[0].get_text().strip())
             else:
                 price_value = 0  # todo прописать правильное назначение ноля, если не смог спарсить
-            our_code_price_dict[int(data['наш код'][i])] = [price_value]
+            our_code_price_dict[int(data_instr['наш код'][i])] = [price_value]
             our_code_price_df = pd.DataFrame.from_dict(our_code_price_dict, orient='index')
         except Exception as e:
             with open('./../logs/log_1.txt', 'a') as f:
-                f.write(f'error on parsing {data["cсылка"][i]}, - {e}')
+                f.write(f'error on parsing {data_instr["cсылка"][i]}, - {e}')
 
     return our_code_price_df
 
 
 # ------------------------------------------------------------------------------------------------
-# parsing makita-ite for prices and push it to the dataframe
-def get_df_with_prices_makita(data):
-    pass
+# parsing all items in data, take price-value from makita-site, and push it to dataframe
+def get_df_with_prices_makita(data_makita):
+    """
+    data-makita: pandas dataframe
+    return: pandas dataframe with price for ich item
+    """
+    our_code_price_df = []  # empty output_list
+    data_makita.reset_index(inplace=True)
+    our_code_price_dict = {}
+    session = requests.Session()
+    for i in tqdm(range(len(data_makita['Cсылка']))):
+        try:
+            response = session.get(data_makita['Cсылка'][i])
+            if response.status_code == 200:
+                soup = bs(response.content, 'html.parser')
+                price_value = price_cutter(soup.select('#content > div.product-info > div > div.extra-wrap > div.price > span')[0].get_text().strip())
+            else:
+                price_value = 0  # TODO прописать правильное назначение ноля, если не смог спарсить
+            our_code_price_dict[int(data_makita['Наш код'][i])] = [price_value]
+            our_code_price_df = pd.DataFrame.from_dict(our_code_price_dict, orient='index')
+        except Exception as e:
+            print(f'{e}')
+            with open('./../logs/log_1.txt', 'a') as f:
+                f.write(f'error on parsing {data_makita["Ссылка"][i]}, - {e}')
+
+    return our_code_price_df
+
+
+
