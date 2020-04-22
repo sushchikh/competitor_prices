@@ -7,7 +7,6 @@ __pycache__/
 *.so
 log_1.txt
 lpt.yaml
-/xlsx
 py_raw/lpt.yaml
 # Distribution / packaging
 .Python
