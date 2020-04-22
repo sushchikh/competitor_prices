@@ -8,7 +8,6 @@ __pycache__/
 log_1.txt
 lpt.yaml
 /xlsx
-data/
 py_raw/lpt.yaml
 # Distribution / packaging
 .Python
