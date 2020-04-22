@@ -24,4 +24,4 @@ if __name__ == '__main__':
     print('push Makita to csv')
     push_data_to_csv(name, code_prices_makita_df)
     # print(code_prices_df.head())
-    email_sender()
+    # email_sender()
