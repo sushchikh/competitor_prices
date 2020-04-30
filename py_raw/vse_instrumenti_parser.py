@@ -22,10 +22,16 @@ def get_data_from_file():
     read xlsx-file, convert it to the dataframe, return dataframe
     """
     vse_bosch_df = pd.read_excel('./../data/vse_instrumenti_bosch.xlsx', engine='xlrd')  #  path for workout
-    # vse_bosch_df = pd.read_excel('~/Python_main/competitor_prices/data/Instrument_prices.xlsx', engine='xlrd')  # path fo server
     vse_bosch_witout_null_df = vse_bosch_df[vse_bosch_df['наш код'].notnull()]
     vse_bosch_witout_null_df.reset_index(inplace=True)
-    return vse_bosch_witout_null_df
+
+    vse_metabo_df = pd.read_excel('./../data/vse_instrumenti_metabo.xlsx', engine='xlrd')
+    vse_metabo_without_null_df = vse_metabo_df[vse_metabo_df['наш код'].notnull()]
+    vse_metabo_without_null_df.reset_index(inplace=True)
+
+    result_df = vse_bosch_witout_null_df.append(vse_metabo_without_null_df, ignore_index = True)
+
+    return result_df
 
 
 # ------------------------------------------------------------------------------------------------
@@ -39,6 +45,7 @@ def get_prices_code_dict(browser, df):
             code_price_dict[int(df['наш код'][i])] = price_cutter(item_price.text)
         except:
             continue
+
     our_code_price_df = pd.DataFrame.from_dict(code_price_dict, orient='index')
 
     return our_code_price_df
@@ -69,7 +76,7 @@ def get_login_password_from_yaml():
 # push file to ftp
 def push_file_to_ftp():
     server_address, login, password = get_login_password_from_yaml()
-    os.system(f"sshpass -p {password} scp /home/krot/5/competitor_prices/xlsx/vse_instrumenti_bosch.csv {login}@{server_address}:/home/i/infotd5v/infotd5v.beget.tech/public_html/import_1c/competitor_prices/")
+    os.system(f"sshpass -p {password} scp /home/krot/5/competitor_prices/xlsx/vse_instrumenti.csv {login}@{server_address}:/home/i/infotd5v/infotd5v.beget.tech/public_html/import_1c/competitor_prices/")
 
 
 ##     ##    ###    #### ##    ##
@@ -82,11 +89,9 @@ def push_file_to_ftp():
 
 if __name__ == "__main__":
     df = get_data_from_file()
-    options = Options()
-    options.add_argument("window-size=400,400")
-    browser = webdriver.Chrome(options=options)
+    browser = webdriver.Chrome()
     browser.implicitly_wait(3)
     code_price_df = get_prices_code_dict(browser, df)
-    push_data_to_csv('vse_instrumenti_bosch', code_price_df)
+    push_data_to_csv('vse_instrumenti', code_price_df)
     browser.quit()
     push_file_to_ftp()
