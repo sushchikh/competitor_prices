@@ -177,4 +177,3 @@ def get_df_with_prices_makita(data_makita):
     return our_code_price_df
 
 
-

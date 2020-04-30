@@ -4,7 +4,7 @@ from modules import get_df_with_prices_instr
 from modules import push_data_to_xlsx
 from modules import get_df_with_prices_makita
 from modules import push_data_to_csv
-from modules import email_sender
+
 
 if __name__ == '__main__':
     instr_df, makita_df = get_data_from_file()
