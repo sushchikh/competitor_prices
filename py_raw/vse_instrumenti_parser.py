@@ -39,7 +39,7 @@ def get_data_from_file():
 # parsing
 def get_prices_code_dict(browser, df):
     code_price_dict = {}
-    for i in tqdm(range(len(df['ссылка']))):  # len(df['ссылка'])
+    for i in tqdm(range(3)):  # len(df['ссылка'])
         try:
             browser.get(df['ссылка'][i])
             item_price = browser.find_element_by_css_selector('#b-product-info > div.right-block.card-right-aside > div.card-basket-block-new > div.ns.price-wrapper > div > span.price-value')
@@ -98,4 +98,4 @@ if __name__ == "__main__":
     code_price_df = get_prices_code_dict(browser, df)
     push_data_to_csv('vse_instrumenti', code_price_df)
     browser.quit()
-    push_file_to_ftp()
+    # push_file_to_ftp()
