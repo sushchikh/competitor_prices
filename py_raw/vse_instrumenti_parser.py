@@ -4,6 +4,7 @@ from selenium import webdriver
 import yaml
 import os
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.firefox.options import Options
 
 
 # ------------------------------------------------------------------------------------------------
@@ -88,8 +89,11 @@ def push_file_to_ftp():
 ##     ## ##     ## #### ##    ##
 
 if __name__ == "__main__":
+    options = Options()
+    options.headless = True
+
     df = get_data_from_file()
-    browser = webdriver.Chrome()
+    browser = webdriver.Firefox(options=options)
     browser.implicitly_wait(3)
     code_price_df = get_prices_code_dict(browser, df)
     push_data_to_csv('vse_instrumenti', code_price_df)
