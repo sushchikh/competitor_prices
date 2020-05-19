@@ -77,7 +77,8 @@ def get_login_password_from_yaml():
 # push file to ftp
 def push_file_to_ftp():
     server_address, login, password = get_login_password_from_yaml()
-    os.system(f"sshpass -p {password} scp /home/krot/5/competitor_prices/xlsx/vse_instrumenti.csv {login}@{server_address}:/home/i/infotd5v/infotd5v.beget.tech/public_html/import_1c/competitor_prices")
+    # os.system(f"sshpass -p {password} scp /home/krot/5/competitor_prices/xlsx/vse_instrumenti.csv {login}@{server_address}:/home/i/infotd5v/infotd5v.beget.tech/public_html/import_1c/competitor_prices")
+    os.system(f"sshpass -p {password} scp /home/krot/5/competitor_prices/xlsx/vse_instrumenti.csv {login}@{server_address}:~/Python_main/competitor_prices/xlsx/")
 
 
 ##     ##    ###    #### ##    ##
@@ -89,13 +90,14 @@ def push_file_to_ftp():
 ##     ## ##     ## #### ##    ##
 
 if __name__ == "__main__":
-    options = Options()
-    options.headless = True
+    # options = Options()
+    # options.headless = True
+    # browser = webdriver.Firefox(options=options)
 
+    browser = webdriver.Chrome()
     df = get_data_from_file()
-    browser = webdriver.Firefox(options=options)
     browser.implicitly_wait(3)
     code_price_df = get_prices_code_dict(browser, df)
     push_data_to_csv('vse_instrumenti', code_price_df)
     browser.quit()
-    # push_file_to_ftp()
+    push_file_to_ftp()
