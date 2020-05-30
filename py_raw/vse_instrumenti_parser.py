@@ -30,7 +30,12 @@ def get_data_from_file():
     vse_metabo_without_null_df = vse_metabo_df[vse_metabo_df['наш код'].notnull()]
     vse_metabo_without_null_df.reset_index(inplace=True)
 
-    result_df = vse_bosch_witout_null_df.append(vse_metabo_without_null_df, ignore_index = True)
+    vse_makita_df = pd.read_excel('./../data/vse_instrumenti_makita.xlsx', engine='xlrd')
+    vse_makita_without_null_df = vse_makita_df[vse_makita_df['наш код'].notnull()]
+    vse_makita_without_null_df.reset_index(inplace=True)
+
+    result_df = vse_bosch_witout_null_df.append(vse_metabo_without_null_df, ignore_index=True)
+    result_df = result_df.append(vse_makita_without_null_df, ignore_index=True)
 
     return result_df
 
@@ -96,6 +101,7 @@ if __name__ == "__main__":
 
     browser = webdriver.Chrome()
     df = get_data_from_file()
+    print(len(df))
     browser.implicitly_wait(3)
     code_price_df = get_prices_code_dict(browser, df)
     push_data_to_csv('vse_instrumenti', code_price_df)

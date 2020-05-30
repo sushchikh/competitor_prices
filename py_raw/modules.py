@@ -70,11 +70,13 @@ def get_data_from_file():
     """
     read xlsx-file, convert it to the dataframe, return dataframe
     """
-    #instr_df = pd.read_excel('./../data/Instrument_price.xlsx', engine='xlrd')  #  path for workout
+    # instr_df = pd.read_excel('./../data/Instrument_price.xlsx', engine='xlrd')  #  path for workout
+    # instr_df = pd.read_excel('~/5/competitor_prices/data/Instrument_prices.xlsx', engine='xlrd')
     instr_df = pd.read_excel('~/Python_main/competitor_prices/data/Instrument_prices.xlsx', engine='xlrd')
     instr_df_with_our_code = instr_df[instr_df['наш код'].notnull()]
 
-    #makita_df = pd.read_excel('./../data/makita_prices.xlsx', engine='xlrd')
+    # makita_df = pd.read_excel('./../data/makita_prices.xlsx', engine='xlrd')
+    # makita_df = pd.read_excel('~/5/competitor_prices/data/makita_prices.xlsx', engine='xlrd')
     makita_df = pd.read_excel('~/Python_main/competitor_prices/data/makita_prices.xlsx', engine='xlrd')
     makita_df_with_our_code = makita_df[makita_df['Наш код'].notnull()]
 
@@ -131,7 +133,7 @@ def get_df_with_prices_instr(data_instr):
     data_instr.reset_index(inplace=True)
     our_code_price_dict = {}
     session = requests.Session()
-    for i in tqdm(range(len(data_instr['ссылка']))):
+    for i in tqdm(range(10)):  # len(data_instr['ссылка'])
         try:
             response = session.get(data_instr['ссылка'][i])
             if response.status_code == 200:
@@ -159,7 +161,7 @@ def get_df_with_prices_makita(data_makita):
     data_makita.reset_index(inplace=True)
     our_code_price_dict = {}
     session = requests.Session()
-    for i in tqdm(range(len(data_makita['Cсылка']))):
+    for i in tqdm(range(10)):  # len(data_makita['Cсылка'])
         try:
             response = session.get(data_makita['Cсылка'][i])
             if response.status_code == 200:
