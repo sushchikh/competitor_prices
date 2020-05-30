@@ -133,7 +133,7 @@ def get_df_with_prices_instr(data_instr):
     data_instr.reset_index(inplace=True)
     our_code_price_dict = {}
     session = requests.Session()
-    for i in tqdm(range(10)):  # len(data_instr['ссылка'])
+    for i in tqdm(range(len(data_instr['ссылка']))):  # len(data_instr['ссылка'])
         try:
             response = session.get(data_instr['ссылка'][i])
             if response.status_code == 200:
@@ -161,7 +161,7 @@ def get_df_with_prices_makita(data_makita):
     data_makita.reset_index(inplace=True)
     our_code_price_dict = {}
     session = requests.Session()
-    for i in tqdm(range(10)):  # len(data_makita['Cсылка'])
+    for i in tqdm(range(len(data_makita['Cсылка']))):  # len(data_makita['Cсылка'])
         try:
             response = session.get(data_makita['Cсылка'][i])
             if response.status_code == 200:
