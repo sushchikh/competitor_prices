@@ -165,7 +165,6 @@ def get_df_with_prices_makita(data_makita):
     session = requests.Session()
     print('Кол-во ссылок в макитовской базе:', len(data_makita))
     for i in tqdm(range(len(data_makita['Cсылка']))):  # len(data_makita['Cсылка'])
-        print('Парсю', data_makita['Cсылка'][i])
         try:
             response = session.get(data_makita['Cсылка'][i])
             if response.status_code == 200:
