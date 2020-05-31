@@ -71,13 +71,13 @@ def get_data_from_file():
     read xlsx-file, convert it to the dataframe, return dataframe
     """
     # instr_df = pd.read_excel('./../data/Instrument_price.xlsx', engine='xlrd')  #  path for workout
-    # instr_df = pd.read_excel('~/5/competitor_prices/data/Instrument_prices.xlsx', engine='xlrd')
-    instr_df = pd.read_excel('~/Python_main/competitor_prices/data/Instrument_prices.xlsx', engine='xlrd')
+    instr_df = pd.read_excel('~/5/competitor_prices/data/Instrument_prices.xlsx', engine='xlrd')
+    # instr_df = pd.read_excel('~/Python_main/competitor_prices/data/Instrument_prices.xlsx', engine='xlrd')
     instr_df_with_our_code = instr_df[instr_df['наш код'].notnull()]
 
     # makita_df = pd.read_excel('./../data/makita_prices.xlsx', engine='xlrd')
-    # makita_df = pd.read_excel('~/5/competitor_prices/data/makita_prices.xlsx', engine='xlrd')
-    makita_df = pd.read_excel('~/Python_main/competitor_prices/data/makita_prices.xlsx', engine='xlrd')
+    makita_df = pd.read_excel('~/5/competitor_prices/data/makita_prices.xlsx', engine='xlrd')
+    # makita_df = pd.read_excel('~/Python_main/competitor_prices/data/makita_prices.xlsx', engine='xlrd')
     makita_df_with_our_code = makita_df[makita_df['Наш код'].notnull()]
 
     return instr_df_with_our_code, makita_df_with_our_code
@@ -143,6 +143,8 @@ def get_df_with_prices_instr(data_instr):
                 price_value = 0  # todo прописать правильное назначение ноля, если не смог спарсить
             our_code_price_dict[int(data_instr['наш код'][i])] = [price_value]
             our_code_price_df = pd.DataFrame.from_dict(our_code_price_dict, orient='index')
+        except IndexError:  # if no such element on page
+            continue
         except Exception as e:
             with open('./../logs/log_1.txt', 'a') as f:
                 f.write(f'error on parsing {data_instr["cсылка"][i]}, - {e}')
@@ -161,7 +163,9 @@ def get_df_with_prices_makita(data_makita):
     data_makita.reset_index(inplace=True)
     our_code_price_dict = {}
     session = requests.Session()
+    print('Кол-во ссылок в макитовской базе:', len(data_makita))
     for i in tqdm(range(len(data_makita['Cсылка']))):  # len(data_makita['Cсылка'])
+        print('Парсю', data_makita['Cсылка'][i])
         try:
             response = session.get(data_makita['Cсылка'][i])
             if response.status_code == 200:
@@ -171,6 +175,8 @@ def get_df_with_prices_makita(data_makita):
                 price_value = 0  # TODO прописать правильное назначение ноля, если не смог спарсить
             our_code_price_dict[int(data_makita['Наш код'][i])] = [price_value]
             our_code_price_df = pd.DataFrame.from_dict(our_code_price_dict, orient='index')
+        except IndexError:  # if no such element on page
+            continue
         except Exception as e:
             print(f'{e}')
             with open('./../logs/log_1.txt', 'a') as f:
