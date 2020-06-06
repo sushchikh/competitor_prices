@@ -82,8 +82,16 @@ def get_login_password_from_yaml():
 # push file to ftp
 def push_file_to_ftp():
     server_address, login, password = get_login_password_from_yaml()
+    local_server = '192.168.1.22'
     # os.system(f"sshpass -p {password} scp /home/krot/5/competitor_prices/xlsx/vse_instrumenti.csv {login}@{server_address}:/home/i/infotd5v/infotd5v.beget.tech/public_html/import_1c/competitor_prices")
-    os.system(f"sshpass -p {password} scp /home/krot/5/competitor_prices/xlsx/vse_instrumenti.csv {login}@{server_address}:~/Python_main/competitor_prices/xlsx/")
+    try:
+        os.system(f"sshpass -p {password} scp /home/krot/5/competitor_prices/xlsx/vse_instrumenti.csv {login}@{server_address}:~/Python_main/competitor_prices/xlsx/")
+    except:
+        pass
+    try:
+        os.system(f"sshpass -p {password} scp /home/krot/5/competitor_prices/xlsx/vse_instrumenti.csv {login}@{local_server}:~/Python_main/competitor_prices/xlsx/")
+    except:
+        pass
 
 
 ##     ##    ###    #### ##    ##
