@@ -22,15 +22,18 @@ def get_data_from_file():
     """
     read xlsx-file, convert it to the dataframe, return dataframe
     """
-    vse_bosch_df = pd.read_excel('./../data/vse_instrumenti_bosch.xlsx', engine='xlrd')  #  path for workout
+    # vse_bosch_df = pd.read_excel('./../data/vse_instrumenti_bosch.xlsx', engine='xlrd')  #  path for workout
+    vse_bosch_df = pd.read_excel('~/5/competitor_prices/data/vse_instrumenti_bosch.xlsx', engine='xlrd')
     vse_bosch_witout_null_df = vse_bosch_df[vse_bosch_df['наш код'].notnull()]
     vse_bosch_witout_null_df.reset_index(inplace=True)
 
-    vse_metabo_df = pd.read_excel('./../data/vse_instrumenti_metabo.xlsx', engine='xlrd')
+    # vse_metabo_df = pd.read_excel('./../data/vse_instrumenti_metabo.xlsx', engine='xlrd')
+    vse_metabo_df = pd.read_excel('~/5/competitor_prices/data/vse_instrumenti_metabo.xlsx', engine='xlrd')
     vse_metabo_without_null_df = vse_metabo_df[vse_metabo_df['наш код'].notnull()]
     vse_metabo_without_null_df.reset_index(inplace=True)
 
-    vse_makita_df = pd.read_excel('./../data/vse_instrumenti_makita.xlsx', engine='xlrd')
+    # vse_makita_df = pd.read_excel('./../data/vse_instrumenti_makita.xlsx', engine='xlrd')
+    vse_makita_df = pd.read_excel('~/5/competitor_prices/data/vse_instrumenti_makita.xlsx', engine='xlrd')
     vse_makita_without_null_df = vse_makita_df[vse_makita_df['наш код'].notnull()]
     vse_makita_without_null_df.reset_index(inplace=True)
 
@@ -60,14 +63,14 @@ def get_prices_code_dict(browser, df):
 # ------------------------------------------------------------------------------------------------
 # push dataframe to csv
 def push_data_to_csv(name, data):
-    file_path = './../xlsx/' + str(name) + '.csv'
+    file_path = '/home/krot/5/competitor_prices/xlsx/' + str(name) + '.csv'
     data.to_csv(file_path, sep=';', header=False)
 
 
 # ------------------------------------------------------------------------------------------------
 def get_login_password_from_yaml():
     try:
-        with open('./../data/lpt.yaml', 'r') as f:
+        with open('/home/krot/5/competitor_prices/data/lpt.yaml', 'r') as f:
             lpt = yaml.safe_load(f.read())
             server_address = lpt['server_address']
             login = lpt['server_login']
