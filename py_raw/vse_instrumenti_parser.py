@@ -5,6 +5,7 @@ import yaml
 import os
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.firefox.options import Options
+import subprocess as subproc
 
 
 # ------------------------------------------------------------------------------------------------
@@ -118,3 +119,4 @@ if __name__ == "__main__":
     push_data_to_csv('vse_instrumenti', code_price_df)
     browser.quit()
     push_file_to_ftp()
+    subproc.call(['notify-send', 'Закончил парсить сайт', '"все инструменты"'])
