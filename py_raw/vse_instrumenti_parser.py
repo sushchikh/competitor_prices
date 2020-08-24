@@ -38,8 +38,13 @@ def get_data_from_file():
     vse_makita_without_null_df = vse_makita_df[vse_makita_df['наш код'].notnull()]
     vse_makita_without_null_df.reset_index(inplace=True)
 
+    vse_elitech_df = pd.read_excel('~/5/competitor_prices/data/vse_instrumenti_elitech.xlsx', engine='xlrd')
+    vse_elitech_without_null_df = vse_elitech_df[vse_elitech_df['наш код'].notnull()]
+    vse_elitech_without_null_df.reset_index(inplace=True)
+
     result_df = vse_bosch_witout_null_df.append(vse_metabo_without_null_df, ignore_index=True)
     result_df = result_df.append(vse_makita_without_null_df, ignore_index=True)
+    result_df = result_df.append(vse_elitech_without_null_df, ignore_index=True)
 
     return result_df
 
