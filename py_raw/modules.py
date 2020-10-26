@@ -141,7 +141,7 @@ def get_df_with_prices_instr(data_instr):
                 price_value = price_cutter(soup.select('body > div.wrap > div.container.container_mobile.page__container.sticky-inside.content > div.product-view > div:nth-child(1) > div.col.l3.s12.sticky > div.product-view__wrap.product-view__buy-wrap.side-bar.hide-on-small-only > div:nth-child(1) > div > div.product-view__prices > div.product-view__price-value')[0].get_text().strip())
             else:
                 price_value = 0  # todo прописать правильное назначение ноля, если не смог спарсить
-            
+
             our_code_price_dict[int(data_instr['наш код'][i])] = [price_value]
             our_code_price_df = pd.DataFrame.from_dict(our_code_price_dict, orient='index')
         except IndexError:  # if no such element on page
