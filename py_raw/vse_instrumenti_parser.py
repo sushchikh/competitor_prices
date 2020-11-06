@@ -59,6 +59,16 @@ def get_prices_code_dict(browser, df):
     for i in tqdm(range(len(df['ссылка']))):  # len(df['ссылка'])
         try:
             browser.get(df['ссылка'][i])
+            # если блок называется "лови момент", то цена ловится в другом блоке, иначе - ловится по дефолту
+            try:
+                lovi_moment_btn = browser.find_element_by_css_selector('div.price-falldown-sale-block__header')
+                if lovi_moment_btn:
+                    item_price = browser.find_element_by_css_selector('#card-month-sale-block > div.month-sale-block__body.ns > span.price-value')
+                    code_price_dict[int(df['наш код'][i])] = price_cutter(item_price.text)
+                    continue
+
+            except:
+                pass
             item_price = browser.find_element_by_css_selector('#b-product-info > div.right-block.card-right-aside > div.card-basket-block-new > div.ns.price-wrapper > div > span.price-value')
             code_price_dict[int(df['наш код'][i])] = price_cutter(item_price.text)
             no_item_btn = browser.find_element_by_css_selector('#b-product-info > div.right-block.card-right-aside > div.card-basket-block-new > div:nth-child(6) > span')
