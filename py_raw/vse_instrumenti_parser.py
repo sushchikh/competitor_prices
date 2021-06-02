@@ -9,6 +9,7 @@ from selenium.webdriver.firefox.options import Options
 import subprocess as subproc
 
 
+
 # ------------------------------------------------------------------------------------------------
 def price_cutter(text):
     output_message = ''
@@ -169,11 +170,14 @@ if __name__ == "__main__":
     # options = Options()
     # options.headless = True
     # browser = webdriver.Firefox(options=options)
+    chrome_options = webdriver.ChromeOptions()
+    prefs = {"profile.managed_default_content_settings.images": 2}
+    chrome_options.add_experimental_option("prefs", prefs)
 
-    browser = webdriver.Chrome()
+    browser = webdriver.Chrome(chrome_options=chrome_options)
     df = get_data_from_file()
     print(len(df))
-    browser.implicitly_wait(1.5)
+    browser.implicitly_wait(0.75)
     code_price_df = get_prices_code_dict(browser, df)
     push_data_to_csv('vse_instrumenti', code_price_df)
     browser.quit()
