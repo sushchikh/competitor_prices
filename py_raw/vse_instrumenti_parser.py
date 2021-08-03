@@ -77,7 +77,8 @@ def get_prices_code_dict(browser, df):
         try:
             # ловим подобрать аналог, если есть - цена = "1" и переходим к следующему товару
             # print('ловим кнопку "подобрать аналог"')
-            no_item_btn = browser.find_element_by_css_selector('#b-product-info > div.right-block.card-right-aside > div.card-basket-block-new')
+            # no_item_btn = browser.find_element_by_css_selector('#b-product-info > div.right-block.card-right-aside > div.card-basket-block-new')
+            no_item_btn = browser.find_element_by_css_selector('#b-product-info > section.product-main > div.grid.-justify-between > div.column-right > div.product-price > span > span.label')
             if 'Подобрать аналог' in no_item_btn.text:
                 code_price_dict[int(df['наш код'][i])] = 1
                 # print('кнопка "подобрать аналог есть, цена = 1, пошли дальше"')
@@ -95,7 +96,7 @@ def get_prices_code_dict(browser, df):
             if lovi_moment_btn:
                 item_price = browser.find_element_by_css_selector('#card-month-sale-block > div.month-sale-block__body.ns > span.price-value')
                 code_price_dict[int(df['наш код'][i])] = price_cutter(item_price.text)
-                # print(f'нашел копку "лови момент" собирал цену: {price_cutter(item_price.text)}, пошел дальше')
+                print(f'нашел копку "лови момент" собирал цену: {price_cutter(item_price.text)}, пошел дальше')
                 continue
         except NoSuchElementException:
             # если лови-момента нет
@@ -103,7 +104,8 @@ def get_prices_code_dict(browser, df):
             pass
 
         try:
-            item_price = browser.find_element_by_css_selector('#b-product-info > div.right-block.card-right-aside > div.card-basket-block-new > div.ns.price-wrapper > div > span.price-value')
+            # item_price = browser.find_element_by_css_selector('#b-product-info > div.right-block.card-right-aside > div.card-basket-block-new > div.ns.price-wrapper > div > span.price-value')
+            item_price = browser.find_element_by_css_selector('#b-product-info > section.product-main > div.grid.-justify-between > div.column-right > div > span.current-price')
             cutted_price = price_cutter(item_price.text)
             code_price_dict[int(df['наш код'][i])] = cutted_price
             # print(f'поймал обычную цену: {cutted_price}')
@@ -117,7 +119,7 @@ def get_prices_code_dict(browser, df):
     with open('./../logs/value_of_none_items.txt', 'w') as f:
         output_message = f"всего итемов: {len(df['ссылка'])}, из них пустых {value_of_none_items}"
         f.write(output_message)
-
+    print(our_code_price_df)
     return our_code_price_df
 
 
@@ -176,8 +178,8 @@ if __name__ == "__main__":
 
     browser = webdriver.Chrome(chrome_options=chrome_options)
     df = get_data_from_file()
-    print(len(df))
-    browser.implicitly_wait(0.75)
+    # print(len(df))
+    # browser.implicitly_wait(0.1)
     code_price_df = get_prices_code_dict(browser, df)
     push_data_to_csv('vse_instrumenti', code_price_df)
     browser.quit()
