@@ -71,13 +71,13 @@ def get_data_from_file():
     read xlsx-file, convert it to the dataframe, return dataframe
     """
     # instr_df = pd.read_excel('./../data/Instrument_price.xlsx', engine='xlrd')  #  path for workout
-    # instr_df = pd.read_excel('~/5/competitor_prices/data/Instrument_prices.xlsx', engine='xlrd')
-    instr_df = pd.read_excel('~/Python_main/competitor_prices/data/Instrument_prices.xlsx', engine='xlrd')
+    instr_df = pd.read_excel('~/5/competitor_prices/data/Instrument_prices.xlsx', engine='xlrd')
+    # instr_df = pd.read_excel('~/Python_main/competitor_prices/data/Instrument_prices.xlsx', engine='xlrd')
     instr_df_with_our_code = instr_df[instr_df['наш код'].notnull()]
 
     # makita_df = pd.read_excel('./../data/makita_prices.xlsx', engine='xlrd')
-    # makita_df = pd.read_excel('~/5/competitor_prices/data/makita_prices.xlsx', engine='xlrd')
-    makita_df = pd.read_excel('~/Python_main/competitor_prices/data/makita_prices.xlsx', engine='xlrd')
+    makita_df = pd.read_excel('~/5/competitor_prices/data/makita_prices.xlsx', engine='xlrd')
+    # makita_df = pd.read_excel('~/Python_main/competitor_prices/data/makita_prices.xlsx', engine='xlrd')
     makita_df_with_our_code = makita_df[makita_df['Наш код'].notnull()]
 
     return instr_df_with_our_code, makita_df_with_our_code
@@ -138,18 +138,26 @@ def get_df_with_prices_instr(data_instr):
             response = session.get(data_instr['ссылка'][i])
             if response.status_code == 200:
                 soup = bs(response.content, 'html.parser')
-                price_value = price_cutter(soup.select('body > div.wrap > div.container.container_mobile.page__container.sticky-inside.content > div.product-view > div:nth-child(1) > div.col.l3.s12.sticky > div.product-view__wrap.product-view__buy-wrap.side-bar.hide-on-small-only > div:nth-child(1) > div > div.product-view__prices > div.product-view__price-value')[0].get_text().strip())
+                price_value = price_cutter(soup.select('body > main > div > div > div.product-page > div.product-page__content-wrap > div.product-page__aside-content > div > div.product-price.product-page__aside-product-price > div.product-price__price-wrap > div.product-price__current-price')[0].get_text().strip())
+                print(price_value)
             else:
                 price_value = 0  # todo прописать правильное назначение ноля, если не смог спарсить
+                print('не смог спарсить цену')
+                our_code_price_dict[int(data_instr['наш код'][i])] = [price_value]
+                print(f'url: {data_instr["ссылка"][i]}')
 
             our_code_price_dict[int(data_instr['наш код'][i])] = [price_value]
-            our_code_price_df = pd.DataFrame.from_dict(our_code_price_dict, orient='index')
+
         except IndexError:  # if no such element on page
+            price_value = 0
+            our_code_price_dict[int(data_instr['наш код'][i])] = [price_value]
+            print('вот тут не смог спарсить цену')
+            print(f'url: {data_instr["ссылка"][i]}')
             continue
         except Exception as e:
             with open('./../logs/log_1.txt', 'a') as f:
                 f.write(f'error on parsing {data_instr["cсылка"][i]}, - {e}')
-
+    our_code_price_df = pd.DataFrame.from_dict(our_code_price_dict, orient='index')
     return our_code_price_df
 
 
