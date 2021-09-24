@@ -5,7 +5,7 @@ from selenium.common.exceptions import NoSuchElementException
 import yaml
 import os
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.firefox.options import Options
+# from selenium.webdriver.firefox.options import Options
 import subprocess as subproc
 
 
@@ -172,9 +172,16 @@ if __name__ == "__main__":
     # options = Options()
     # options.headless = True
     # browser = webdriver.Firefox(options=options)
-    chrome_options = webdriver.ChromeOptions()
-    prefs = {"profile.managed_default_content_settings.images": 2}
-    chrome_options.add_experimental_option("prefs", prefs)
+
+    # chrome_options = webdriver.ChromeOptions()
+    # prefs = {"profile.managed_default_content_settings.images": 2}
+    # chrome_options.add_experimental_option("prefs", prefs)
+
+    chrome_options = Options()
+    chrome_options.add_argument("--disable-extensions")
+    chrome_options.add_argument("--disable-gpu")
+    # chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--headless")
 
     browser = webdriver.Chrome(chrome_options=chrome_options)
     df = get_data_from_file()
