@@ -190,5 +190,5 @@ if __name__ == "__main__":
     code_price_df = get_prices_code_dict(browser, df)
     push_data_to_csv('vse_instrumenti', code_price_df)
     browser.quit()
-    push_file_to_ftp()
-    subproc.call(['notify-send', 'Закончил парсить сайт', '"все инструменты"'])
+    # push_file_to_ftp()
+    # subproc.call(['notify-send', 'Закончил парсить сайт', '"все инструменты"'])
